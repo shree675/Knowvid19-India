@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,25 +20,40 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             children: [
               Container(
-                color: Color(0xff4d4dff),
+
                 // color: Color(0xff454545),
                 decoration: BoxDecoration(
+                  color: Color(0xff4d4dff),
                   borderRadius: BorderRadius.vertical(
+
                     bottom: Radius.circular(50.0),        // 50 to 60
                   ),
                 ),
-                height: 300.0,                            // make it dynamic and responsive
+                height: 250.0,                            // make it dynamic and responsive
                 child: Padding(
                   padding: EdgeInsets.all(10.0),
                   child: Column(
+                    mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text('Location',
-                      style: TextStyle(
-                        fontSize: 30.0,
-                        color: Colors.amber,              // maybe white or green
-                        fontWeight: FontWeight.bold,
-                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Choose your\nlocation below\nand you're\ngood to go!",
+                            style: TextStyle(
+                              fontSize: 24.0,
+                              color: Colors.white,
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.bold,
+                              wordSpacing: 1.4,
+                            ),
+                          ),
+                          SvgPicture.asset(
+                            'assets/location7.svg', height: 100,
+                            width: 100,),
+                        ],
                       ),
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 20.0),
@@ -54,18 +70,37 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Icon(Icons.location_on_rounded,
-                              color: Colors.greenAccent,),
-                            Expanded(
-                              // child: ,
-                            ),
-                          ],
+                          Icon(Icons.location_on_rounded,
+                          color: Colors.greenAccent,),
+                        ],
                         ),
-                      )
+                        ),
+
                     ],
                   ),
                 ),
-              )
+              ),
+              Padding(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: 0.0,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Last Updated: ',
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 12,
+                            color: Colors.black87,
+                          ),),
+
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
