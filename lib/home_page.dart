@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -7,6 +10,57 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  String res="";
+  String val="";
+  Map data;
+  List<String> regions = new List();
+  int ind, length;
+  String lastUpdated="";
+  int totInd,deInd,recInd;
+
+  getData(int j) async {
+    try {
+      http.Response response = await http.get(
+          Uri.encodeFull("https://api.rootnet.in/covid19-in/stats/latest"),
+          headers: {
+            "Accept": "application/json",
+          });
+      setState(() {
+        res = response.body;
+        data = jsonDecode(response.body);
+        length=data["data"]["regional"].length;
+        // print(length);
+        if(regions.length==0) {
+          for (int i = 0; i < length; i++) {
+            regions.add(data["data"]["regional"][i]["loc"]);
+          }
+        }
+        val = data["data"]["regional"][ind]["loc"];
+        DateFormat formatter = DateFormat('dd-MM-yyyy');
+        lastUpdated = formatter.format(DateTime.parse(data["lastRefreshed"]));
+        totInd = data["data"]["summary"]["total"];
+        recInd = data["data"]["summary"]["discharged"];
+        deInd = data["data"]["summary"]["deaths"];
+      });
+    }
+    catch (e) {
+      setState(() {
+        res = "Something went wrong";
+      });
+      print("Something went wrong");
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    ind=0;
+    getData(ind);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                   color: Color(0xff4d4dff),
                   borderRadius: BorderRadius.vertical(
 
-                    bottom: Radius.circular(50.0),        // 50 to 60
+                    bottom: Radius.circular(50.0),
                   ),
                 ),
                 height: 250.0,                            // make it dynamic and responsive
@@ -72,6 +126,37 @@ class _HomePageState extends State<HomePage> {
                           children: [
                           Icon(Icons.location_on_rounded,
                           color: Colors.greenAccent,),
+                            Expanded(
+                              child: DropdownButton(
+                                value: val,
+                                isExpanded: true,
+                                underline: SizedBox(height: 0,),
+                                dropdownColor: Colors.white,
+                                focusColor: Colors.black,
+                                items: regions.map<
+                                    DropdownMenuItem<String>>((
+                                    String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value,
+                                      style: TextStyle(
+                                          fontFamily: 'Montserrat',
+                                          fontSize: 16.0,
+                                          color: Colors.black
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    ind = regions.indexOf(newValue);
+                                    val = newValue;
+                                    getData(ind);
+                                    // res=newValue;
+                                  });
+                                },
+                              ),
+                            ),
                         ],
                         ),
                         ),
@@ -89,18 +174,43 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Last Updated: ',
+                        Text('Last Updated: $lastUpdated',
                           style: TextStyle(
                             fontFamily: 'Montserrat',
                             fontSize: 12,
                             color: Colors.black87,
                           ),),
-
                       ],
                     ),
                   ],
                 ),
               ),
+              Card(
+                color: Colors.grey,
+                margin: EdgeInsets.all(10.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.0),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text('$totInd'),
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
         ),

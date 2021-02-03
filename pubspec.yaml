@@ -1,4 +1,4 @@
-name: covid19_data
+name: tirutsava21_appdev
 description: A new Flutter application.
 
 # The following line prevents the package from being accidentally published to
@@ -24,6 +24,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^0.19.0
+  http: ^0.12.2
+  intl: ^0.16.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
