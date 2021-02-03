@@ -18,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   int ind, length;
   String lastUpdated="";
   int totInd,deInd,recInd;
+  int totReg,deReg,recReg;
 
   getData(int j) async {
     try {
@@ -42,6 +43,9 @@ class _HomePageState extends State<HomePage> {
         totInd = data["data"]["summary"]["total"];
         recInd = data["data"]["summary"]["discharged"];
         deInd = data["data"]["summary"]["deaths"];
+        totReg = data["data"]["regional"][ind]["totalConfirmed"];
+        deReg = data["data"]["regional"][ind]["deaths"];
+        recReg = data["data"]["regional"][ind]["discharged"];
       });
     }
     catch (e) {
@@ -186,7 +190,9 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Card(
-                color: Colors.grey,
+                color: Colors.white,
+                elevation: 5.0,
+                shadowColor: Colors.grey,
                 margin: EdgeInsets.all(10.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
@@ -206,11 +212,109 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text('$totInd'),
+                      Container(
+                        margin: EdgeInsets.all(5.0),
+                        padding: EdgeInsets.all(5.0),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: Text('$totReg'),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(5.0),
+                        padding: EdgeInsets.all(5.0),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: Text('$recReg'),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(5.0),
+                        padding: EdgeInsets.all(5.0),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: Text('$deReg'),
+                      ),
                     ],
                   ),
                 ),
-              )
+              ),
+              Card(
+                color: Colors.white,
+                elevation: 5.0,
+                shadowColor: Colors.grey,
+                margin: EdgeInsets.all(10.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(5.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20.0),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                  Container(
+                  margin: EdgeInsets.all(5.0),
+                  padding: EdgeInsets.all(5.0),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  child: Text('$totInd'),
+                  ),
+                      Container(
+                        margin: EdgeInsets.all(5.0),
+                        padding: EdgeInsets.all(5.0),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: Text('$recInd'),
+                      ),
+                      Container(
+                        margin: EdgeInsets.all(5.0),
+                        padding: EdgeInsets.all(5.0),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        child: Text('$deInd'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
