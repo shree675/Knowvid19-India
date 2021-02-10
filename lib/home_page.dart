@@ -4,6 +4,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:number_display/number_display.dart';
+import 'package:flutter_switch/flutter_switch.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   int totReg,deReg,recReg;
   int highest,lowest;
   String hig="",low="";
+  RefreshController ref = RefreshController(initialRefresh: false);
 
   getData(int j) async {
     try {
@@ -65,9 +69,72 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         res = "Something went wrong";
       });
+      showAlertDialogLight(context);
+      setState((){
+        totReg=null;
+        recReg=null;
+        deReg=null;
+        totInd=null;
+        recInd=null;
+        deInd=null;
+        val="";
+      });
       print("Something went wrong");
       print(e);
     }
+  }
+
+  showAlertDialogLight(BuildContext context) {
+    Widget button = Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0)
+        ),
+        child:FlatButton(
+          color: Colors.white,
+          child: Text("OK",
+            style: TextStyle(
+              fontSize: 18.0,
+              color: Colors.blue,
+              fontWeight: FontWeight.bold,
+            ),),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ));
+
+    AlertDialog alertLight = AlertDialog(
+      backgroundColor: Colors.white,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      title: Text('Oops! Something went wrong',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            fontFamily: 'Montserrat',
+            fontSize: 20.0,
+            color: Colors.black
+        ),),
+      content: Text(
+        'The backend server is temporarily taken down or there is no network available on your device. Please refresh or try again later.',
+        style: TextStyle(
+          fontFamily: 'Montserrat',
+          fontSize: 16.0,
+          color: Colors.grey[700],
+        ),
+        textAlign: TextAlign.center,),
+      actions: [
+        button
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alertLight;
+      },
+    );
+
   }
 
   final display = createDisplay(
@@ -92,501 +159,286 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(0xff4d4dff),
           elevation: 0.0,
       ),
-      body: SingleChildScrollView(
+      drawer: Drawer(
         child: Container(
+          // height: 1000,
+          color: Colors.white,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-
-                // color: Color(0xff454545),
+                height: 200.0,
+                padding: EdgeInsets.all(10.0),
+                width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Color(0xff4d4dff),
                   borderRadius: BorderRadius.vertical(
-
-                    bottom: Radius.circular(50.0),
-                  ),
+                      top: Radius.circular(0), bottom: Radius.circular(20.0)),
+                  color: Colors.blueGrey,
                 ),
-                height: 250.0,                            // make it dynamic and responsive
-                child: Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Choose your\nlocation below\nand you're\ngood to go!",
-                            style: TextStyle(
-                              fontSize: 24.0,
-                              color: Colors.white,
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.bold,
-                              wordSpacing: 1.4,
-                            ),
-                          ),
-                          SvgPicture.asset(
-                            'assets/location7.svg', height: 100,
-                            width: 100,),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 20.0),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 8.0),
-                        height: 60.0,
-                        alignment: Alignment.bottomCenter,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30.0),
-                            border: Border.all(color: Colors.greenAccent,)
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                          Icon(Icons.location_on_rounded,
-                          color: Colors.greenAccent,),
-                            Expanded(
-                              child: DropdownButton(
-                                value: val,
-                                isExpanded: true,
-                                underline: SizedBox(height: 0,),
-                                dropdownColor: Colors.white,
-                                focusColor: Colors.black,
-                                items: regions.map<
-                                    DropdownMenuItem<String>>((
-                                    String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value,
-                                      style: TextStyle(
-                                          fontFamily: 'Montserrat',
-                                          fontSize: 16.0,
-                                          color: Colors.black
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    ind = regions.indexOf(newValue);
-                                    val = newValue;
-                                    getData(ind);
-                                    // res=newValue;
-                                  });
-                                },
-                              ),
-                            ),
-                        ],
-                        ),
-                        ),
-
-                    ],
-                  ),
-                ),
+                alignment: Alignment.center,
+                child: Text('Settings and Info',
+                    style: TextStyle(
+                      fontSize: 35.0,
+                      fontFamily: 'Montserrat',
+                      color: Colors.white,
+                    )),
               ),
-              Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+              SizedBox(height: 10.0,),
+              Container(
+                padding: EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(height: 0.0,),
+                    Text('Theme:',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black,
+                        fontFamily: 'Montserrat',
+                      ),),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Last Updated: $lastUpdated',
+                        Text('Light ',
                           style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            fontSize: 12,
-                            color: Colors.black87,
+                            color: Colors.black54,
+                            fontSize: 16.0,
+                          ),),
+                        FlutterSwitch(
+                          width: 48.0,
+                          height: 22.0,
+                          padding: 1.0,
+                          showOnOff: false,
+                          value: false,
+                          onToggle: (val) async {
+
+                          },
+                        ),
+                        Text(' Dark',
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 16.0,
                           ),),
                       ],
                     ),
                   ],
                 ),
               ),
-              Card(
-                color: Colors.white,
-                elevation: 5.0,
-                shadowColor: Colors.grey,
-                margin: EdgeInsets.all(10.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+              SizedBox(height: 10.0,),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
                 ),
-                child: Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.all(10.0),
-                  padding: EdgeInsets.all(5.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20.0),
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 2.0,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text('Version:  1.0.0',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontFamily: 'Montserrat',
+                        color: Colors.black54,
+                      ),),
+                  ),
+                  // SizedBox(height: 10.0,),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
                     ),
                   ),
+                  // SizedBox(height: 10.0,),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      'The statistics present here is updated once a day. You can refresh the app by swiping the screen down.',
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontSize: 16.0,
+                        color: Colors.black54,
+                      ),),
+                  ),
+                  // SizedBox(height: 10.0,),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                    ),
+                  ),
+                  // SizedBox(height: 10.0,),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text('Please follow all COVID-19 guidelines. Visit the website below for more information.',
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontSize: 16.0,
+                        color: Colors.black54,
+                      ),),
+                  ),
+                  // SizedBox(height: 10.0,),
+                  Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: new InkWell(
+                      child: Text('Guidelines and protocols by WHO',
+                        style: TextStyle(
+                            color: Colors.blue[800],
+                            fontSize: 16.0
+                        ),),
+                      onTap: () => launch('https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: SmartRefresher(
+        controller: ref,
+        enablePullDown: true,
+        enablePullUp: false,
+        header: BezierCircleHeader(
+          bezierColor: Color(0xff4d4dff),
+          circleColor: Colors.greenAccent,
+        ),
+        footer: null,
+        onRefresh: () async {
+          regions.clear();
+          await getData(ind);
+          ref.refreshCompleted();
+        },
+        child: SingleChildScrollView(
+          child: Container(
+            child: Column(
+              children: [
+                Container(
+                  // color: Color(0xff454545),
+                  decoration: BoxDecoration(
+                    color: Color(0xff4d4dff),
+                    borderRadius: BorderRadius.vertical(
+
+                      bottom: Radius.circular(50.0),
+                    ),
+                  ),
+                  height: 250.0,                            // make it dynamic and responsive
+                  child: Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Choose your\nlocation below\nand you're\ngood to go!",
+                              style: TextStyle(
+                                fontSize: 24.0,
+                                color: Colors.white,
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.bold,
+                                wordSpacing: 1.4,
+                              ),
+                            ),
+                            SvgPicture.asset(
+                              'assets/location7.svg', height: 100,
+                              width: 100,),
+                          ],
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20.0),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 8.0),
+                          height: 60.0,
+                          alignment: Alignment.bottomCenter,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30.0),
+                              border: Border.all(color: Colors.greenAccent,)
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                            Icon(Icons.location_on_rounded,
+                            color: Colors.greenAccent,),
+                              Expanded(
+                                child: DropdownButton(
+                                  value: val,
+                                  isExpanded: true,
+                                  underline: SizedBox(height: 0,),
+                                  dropdownColor: Colors.white,
+                                  focusColor: Colors.black,
+                                  items: regions.map<
+                                      DropdownMenuItem<String>>((
+                                      String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value,
+                                        style: TextStyle(
+                                            fontFamily: 'Montserrat',
+                                            fontSize: 16.0,
+                                            color: Colors.black
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      ind = regions.indexOf(newValue);
+                                      val = newValue;
+                                      getData(ind);
+                                      // res=newValue;
+                                    });
+                                  },
+                                ),
+                              ),
+                          ],
+                          ),
+                          ),
+
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text('${val.toUpperCase()}',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'Montserrat',
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          wordSpacing: 1.5,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 5.0,),
-                      Text('Total Infections:',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.amber,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                        ),),
-                      Container(
-                        margin: EdgeInsets.all(5.0),
-                        padding: EdgeInsets.all(5.0),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/cautionyellow.svg', height: 30.0,
-                                  width: 30.0,),
-                                SizedBox(width: 10.0,),
-                                Text('${totReg == null
-                                    ? 'Please wait...'
-                                    : totReg}',
-                                  style: TextStyle(
-                                      fontSize: 22.0, color: Colors.black),
-                                ),
-                              ],
+                      SizedBox(height: 0.0,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Last Updated:  $lastUpdated',
+                            style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 12,
+                              color: Colors.black87,
+                            ),),
+                          Text('Swipe down to refresh',
+                            style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontSize: 12,
+                                color: Colors.black38
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('${display(totReg)}',
-                                  style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.black
-                                  ),),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 5.0,),
-                      Text('Total Recovered:',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.green,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                        ),),
-                      Container(
-                        margin: EdgeInsets.all(5.0),
-                        padding: EdgeInsets.all(5.0),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/cautiongreen1.svg', height: 30.0,
-                                  width: 30.0,),
-                                SizedBox(width: 10.0,),
-                                Text('${recReg == null
-                                    ? 'Please wait...'
-                                    : recReg}',
-                                  style: TextStyle(
-                                      fontSize: 22.0, color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('${display(recReg)}',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.black,
-                                  ),),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 5.0,),
-                      Text('Total Deaths:',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.red,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                        ),),
-                      Container(
-                        margin: EdgeInsets.all(5.0),
-                        padding: EdgeInsets.all(5.0),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/cautionred1.svg', height: 30.0,
-                                  width: 30.0,),
-                                SizedBox(width: 10.0,),
-                                Text('${deReg == null
-                                    ? 'Please wait...'
-                                    : deReg}',
-                                  style: TextStyle(
-                                      fontSize: 22.0, color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('${display(deReg)}',
-                                  style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.black
-                                  ),),
-                              ],
-                            ),
-                          ],
-                        ),
+                          )
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ),
-              Card(
-                color: Colors.white,
-                elevation: 5.0,
-                shadowColor: Colors.grey,
-                margin: EdgeInsets.all(10.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: Container(
-                  width: double.infinity,
+                Card(
+                  color: Colors.white,
+                  elevation: 5.0,
+                  shadowColor: Colors.grey,
                   margin: EdgeInsets.all(10.0),
-                  padding: EdgeInsets.all(5.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 2.0,
-                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text('CASES IN INDIA',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'Montserrat',
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 5.0,),
-                      Text('Total Infections:',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.amber,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                        ),),
-                      Container(
-                        margin: EdgeInsets.all(5.0),
-                        padding: EdgeInsets.all(5.0),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/cautionyellow.svg', height: 30.0,
-                                  width: 30.0,),
-                                SizedBox(width: 10.0,),
-                                Text('${totInd == null
-                                    ? 'Please wait...'
-                                    : totInd}',
-                                  style: TextStyle(
-                                      fontSize: 22.0, color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('${display(totInd)}',
-                                  style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.black
-                                  ),),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 5.0,),
-                      Text('Total Recovered:',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.green,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                        ),),
-                      Container(
-                        margin: EdgeInsets.all(5.0),
-                        padding: EdgeInsets.all(5.0),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/cautiongreen1.svg', height: 30.0,
-                                  width: 30.0,),
-                                SizedBox(width: 10.0,),
-                                Text('${recInd == null
-                                    ? 'Please wait...'
-                                    : recInd}',
-                                  style: TextStyle(
-                                      fontSize: 22.0, color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('${display(recInd)}',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.black,
-                                  ),),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 5.0,),
-                      Text('Total Deaths:',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.red,
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                        ),),
-                      Container(
-                        margin: EdgeInsets.all(5.0),
-                        padding: EdgeInsets.all(5.0),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/cautionred1.svg', height: 30.0,
-                                  width: 30.0,),
-                                SizedBox(width: 10.0,),
-                                Text('${deInd == null
-                                    ? 'Please wait...'
-                                    : deInd}',
-                                  style: TextStyle(
-                                      fontSize: 22.0, color: Colors.black),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('${display(deInd)}',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.black,
-                                  ),),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                elevation: 5.0,
-                shadowColor: Colors.grey,
-                color: Colors.white,
-                margin: EdgeInsets.all(10.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: Container(
+                  child: Container(
+                    width: double.infinity,
                     margin: EdgeInsets.all(10.0),
                     padding: EdgeInsets.all(5.0),
-                    width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20.0),
@@ -598,149 +450,518 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text('MAX AND MIN',
+                        Text('${val.toUpperCase()}',
                           style: TextStyle(
-                              fontSize: 22.0,
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              wordSpacing: 1.5
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            wordSpacing: 1.5,
                           ),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 5.0,),
-                        Text('Highest number of cases:',
+                        Text('Total Infections:',
                           style: TextStyle(
-                            fontSize: 16.0,
+                            fontSize: 14.0,
+                            color: Colors.amber,
                             fontFamily: 'Montserrat',
                             fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey,
-                          ),
-                        ),
-                        SizedBox(height: 5.0,),
+                          ),),
                         Container(
+                          margin: EdgeInsets.all(5.0),
                           padding: EdgeInsets.all(5.0),
+                          width: double.infinity,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5.0),
                             border: Border.all(
                               color: Colors.grey,
                             ),
+                            borderRadius: BorderRadius.circular(30.0),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(hig,
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontFamily: 'Montserrat',
-                                  color: Colors.grey[600],
-                                ),
-                                textAlign: TextAlign.left,
-                              ),
-                              SizedBox(height: 2.0,),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
-                                    children: [
-                                      Text('${highest == null
-                                          ? 'Please wait...'
-                                          : highest}',
-                                        style: TextStyle(
-                                          fontSize: 20.0,
-                                          color: Colors.black,
-                                        ),),
-                                    ],
+                                  SvgPicture.asset(
+                                    'assets/cautionyellow.svg', height: 30.0,
+                                    width: 30.0,),
+                                  SizedBox(width: 10.0,),
+                                  Text('${totReg == null
+                                      ? 'Please wait...'
+                                      : totReg}',
+                                    style: TextStyle(
+                                        fontSize: 22.0, color: Colors.black),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
-                                    children: [
-                                      Text('${display(highest)}',
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          color: Colors.black,
-                                        ),)
-                                    ],
-                                  )
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('${display(totReg)}',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.black
+                                    ),),
                                 ],
                               ),
                             ],
                           ),
                         ),
-
                         SizedBox(height: 5.0,),
-                        Text('Lowest number of cases:',
+                        Text('Total Recovered:',
                           style: TextStyle(
-                            fontSize: 16.0,
+                            fontSize: 14.0,
+                            color: Colors.green,
                             fontFamily: 'Montserrat',
                             fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey,
-                          ),
-                        ),
-                        SizedBox(height: 5.0,),
+                          ),),
                         Container(
+                          margin: EdgeInsets.all(5.0),
                           padding: EdgeInsets.all(5.0),
+                          width: double.infinity,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5.0),
                             border: Border.all(
                               color: Colors.grey,
                             ),
+                            borderRadius: BorderRadius.circular(30.0),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(low,
-                                style: TextStyle(
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/cautiongreen1.svg', height: 30.0,
+                                    width: 30.0,),
+                                  SizedBox(width: 10.0,),
+                                  Text('${recReg == null
+                                      ? 'Please wait...'
+                                      : recReg}',
+                                    style: TextStyle(
+                                        fontSize: 22.0, color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('${display(recReg)}',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.black,
+                                    ),),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 5.0,),
+                        Text('Total Deaths:',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.red,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                          ),),
+                        Container(
+                          margin: EdgeInsets.all(5.0),
+                          padding: EdgeInsets.all(5.0),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                            ),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/cautionred1.svg', height: 30.0,
+                                    width: 30.0,),
+                                  SizedBox(width: 10.0,),
+                                  Text('${deReg == null
+                                      ? 'Please wait...'
+                                      : deReg}',
+                                    style: TextStyle(
+                                        fontSize: 22.0, color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('${display(deReg)}',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.black
+                                    ),),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  color: Colors.white,
+                  elevation: 5.0,
+                  shadowColor: Colors.grey,
+                  margin: EdgeInsets.all(10.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(5.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20.0),
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 2.0,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text('CASES IN INDIA',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'Montserrat',
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 5.0,),
+                        Text('Total Infections:',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.amber,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                          ),),
+                        Container(
+                          margin: EdgeInsets.all(5.0),
+                          padding: EdgeInsets.all(5.0),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                            ),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/cautionyellow.svg', height: 30.0,
+                                    width: 30.0,),
+                                  SizedBox(width: 10.0,),
+                                  Text('${totInd == null
+                                      ? 'Please wait...'
+                                      : totInd}',
+                                    style: TextStyle(
+                                        fontSize: 22.0, color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('${display(totInd)}',
+                                    style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.black
+                                    ),),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 5.0,),
+                        Text('Total Recovered:',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.green,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                          ),),
+                        Container(
+                          margin: EdgeInsets.all(5.0),
+                          padding: EdgeInsets.all(5.0),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                            ),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/cautiongreen1.svg', height: 30.0,
+                                    width: 30.0,),
+                                  SizedBox(width: 10.0,),
+                                  Text('${recInd == null
+                                      ? 'Please wait...'
+                                      : recInd}',
+                                    style: TextStyle(
+                                        fontSize: 22.0, color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('${display(recInd)}',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.black,
+                                    ),),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 5.0,),
+                        Text('Total Deaths:',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.red,
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                          ),),
+                        Container(
+                          margin: EdgeInsets.all(5.0),
+                          padding: EdgeInsets.all(5.0),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                            ),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/cautionred1.svg', height: 30.0,
+                                    width: 30.0,),
+                                  SizedBox(width: 10.0,),
+                                  Text('${deInd == null
+                                      ? 'Please wait...'
+                                      : deInd}',
+                                    style: TextStyle(
+                                        fontSize: 22.0, color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('${display(deInd)}',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.black,
+                                    ),),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Card(
+                  elevation: 5.0,
+                  shadowColor: Colors.grey,
+                  color: Colors.white,
+                  margin: EdgeInsets.all(10.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Container(
+                      margin: EdgeInsets.all(10.0),
+                      padding: EdgeInsets.all(5.0),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20.0),
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 2.0,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text('MAX AND MIN',
+                            style: TextStyle(
+                                fontSize: 22.0,
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                wordSpacing: 1.5
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 5.0,),
+                          Text('Highest number of cases:',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+                          SizedBox(height: 5.0,),
+                          Container(
+                            padding: EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                              border: Border.all(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(hig,
+                                  style: TextStyle(
                                     fontSize: 16.0,
                                     fontFamily: 'Montserrat',
-                                    color: Colors.grey[600]
-                                ),
-                                textAlign: TextAlign.left,
-                              ),
-                              SizedBox(height: 2.0,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
-                                    children: [
-                                      Text('${lowest == null
-                                          ? 'Please wait...'
-                                          : lowest}',
-                                        style: TextStyle(
-                                            fontSize: 20.0,
-                                            color: Colors.black
-                                        ),),
-                                    ],
+                                    color: Colors.grey[600],
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .start,
-                                    children: [
-                                      Text('${display(lowest)}',
-                                        style: TextStyle(
+                                  textAlign: TextAlign.left,
+                                ),
+                                SizedBox(height: 2.0,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .start,
+                                      children: [
+                                        Text('${highest == null
+                                            ? 'Please wait...'
+                                            : highest}',
+                                          style: TextStyle(
+                                            fontSize: 20.0,
+                                            color: Colors.black,
+                                          ),),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .start,
+                                      children: [
+                                        Text('${display(highest)}',
+                                          style: TextStyle(
                                             fontSize: 16.0,
-                                            color: Colors.black
-                                        ),)
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ],
+                                            color: Colors.black,
+                                          ),)
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 10.0,),
-                      ],
-                    )
+
+                          SizedBox(height: 5.0,),
+                          Text('Lowest number of cases:',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+                          SizedBox(height: 5.0,),
+                          Container(
+                            padding: EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                              border: Border.all(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(low,
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontFamily: 'Montserrat',
+                                      color: Colors.grey[600]
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                                SizedBox(height: 2.0,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .start,
+                                      children: [
+                                        Text('${lowest == null
+                                            ? 'Please wait...'
+                                            : lowest}',
+                                          style: TextStyle(
+                                              fontSize: 20.0,
+                                              color: Colors.black
+                                          ),),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .start,
+                                      children: [
+                                        Text('${display(lowest)}',
+                                          style: TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black
+                                          ),)
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10.0,),
+                        ],
+                      )
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 20.0,),
+              ],
+            ),
           ),
         ),
       ),
