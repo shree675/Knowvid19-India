@@ -27,6 +27,10 @@ dependencies:
   http: ^0.12.2
   intl: ^0.16.1
   number_display: ^2.3.0
+  flutter_switch: ^0.2.0
+  url_launcher: ^5.7.10
+  pull_to_refresh: 1.6.3
+  shared_preferences: ^0.5.12+4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -35,6 +39,15 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.8.1
+
+flutter_icons:
+  ios: true
+  android: true
+  image_path_ios: "assets/Group7.png"
+  image_path_android: "assets/Group7.png"
+  adaptive_icon_background: "assets/Group7.png"
+  adaptive_icon_foreground: "assets/Group7.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
