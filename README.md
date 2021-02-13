@@ -7,7 +7,7 @@ This application aims to spread awareness among the people. It instills a sense 
 The app helps common folk realize the importance of their life, in essence. It keeps people updated and tends to bring about behavioural changes in one's own self.
 
 ## Features
-* Displays COVID-19 statistics in a simple yet convenient manner, with aesthetic UI.
+* Displays COVID-19 statistics in a simple yet convenient manner, with an aesthetic UI.
 * Provides statistics of 36 different regions of India.
 * Suports the widely loved dark mode feature.
 * 'Swipe down to refresh' involves an eye pleasing Bezier style refresh animation.
@@ -20,8 +20,8 @@ Visit [Flutter dev](https://flutter.dev/)
 ## Screenshots
 
 <p>
-  <img src="Screenshots/Group 14.png" width="245">&ensp;
-  <img src="Screenshots/Group 15.png" width="245">&ensp;
+  <img src="Screenshots/Group 14.png" width="245">&emsp;
+  <img src="Screenshots/Group 15.png" width="245">&emsp;
   <img src="Screenshots/Group 16.png" width="245">
 </p>
 
