@@ -89,6 +89,7 @@ class _HomePageState extends State<HomePage> {
         hig="";
         low="";
       });
+      await load();
       if(theme) {
         showAlertDialog(context);
       }
