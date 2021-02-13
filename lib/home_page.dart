@@ -1038,7 +1038,7 @@ class _HomePageState extends State<HomePage> {
                                         mainAxisAlignment: MainAxisAlignment
                                             .start,
                                         children: [
-                                          Text('${display(lowest)}',
+                                          Text('${display2(lowest)}',
                                             style: TextStyle(
                                                 fontSize: 16.0,
                                                 color: Colors.black
