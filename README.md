@@ -13,8 +13,27 @@ The app helps common folk realize the importance of their life, in essence. It k
 * 'Swipe down to refresh' involves an eye pleasing Bezier style refresh animation.
 * Data is updated once every day. Alternatively, swipe down to refresh the data.
 
+## Framework
+Built with Flutter.
+Visit [Flutter dev](https://flutter.dev/)
+
 ## Screenshots
 
 <p>
-  <img src="Screenshots/Group 14.png" width="245">
+  <img src="Screenshots/Group 14.png" width="245"> 
+  <img src="Screenshots/Group 15.png" width="245"> 
+  <img src="Screenshots/Group 16.png" width="245">
 </p>
+
+For more images, checkout [Screenshots](Screenshots).
+
+## Version
+v1.0.0
+
+## APK
+The apk is in apk-release folder in the root directory.
+Alternatively, click on [apk-release]() to jump to the apk folder.
+
+## Credits
+* API: [COVID-19 REST API for India](https://api.rootnet.in/). API has been sourced from [The Ministry of Health and Family Welfare](https://www.mohfw.gov.in/) and other [unofficial sources](https://api.rootnet.in/#unofficial-sources).
+* App Icon: Raw icon has been taken from [Iconfinder](https://www.iconfinder.com/).
