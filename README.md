@@ -20,8 +20,8 @@ Visit [Flutter dev](https://flutter.dev/)
 ## Screenshots
 
 <p>
-  <img src="Screenshots/Group 14.png" width="245"> 
-  <img src="Screenshots/Group 15.png" width="245"> 
+  <img src="Screenshots/Group 14.png" width="245">&ensp;
+  <img src="Screenshots/Group 15.png" width="245">&ensp;
   <img src="Screenshots/Group 16.png" width="245">
 </p>
 
@@ -32,8 +32,8 @@ v1.0.0
 
 ## APK
 The apk is in apk-release folder in the root directory.
-Alternatively, click on [apk-release]() to jump to the apk folder.
+Alternatively, click on [apk-release](https://github.com/shree675/tirutsava21_appdev/tree/main/apk-release) to jump to the apk folder.
 
 ## Credits
-* API: [COVID-19 REST API for India](https://api.rootnet.in/). API has been sourced from [The Ministry of Health and Family Welfare](https://www.mohfw.gov.in/) and other [unofficial sources](https://api.rootnet.in/#unofficial-sources).
+* API: [COVID-19 REST API for India](https://api.rootnet.in/) (apirootnet). API has been sourced from [The Ministry of Health and Family Welfare](https://www.mohfw.gov.in/) and other [unofficial sources](https://api.rootnet.in/#unofficial-sources).
 * App Icon: Raw icon has been taken from [Iconfinder](https://www.iconfinder.com/).
