@@ -37,4 +37,4 @@ Alternatively, click on [apk-release](https://github.com/shree675/tirutsava21_ap
 ## Credits
 * API: [COVID-19 REST API for India](https://api.rootnet.in/) (apirootnet). API has been sourced from [The Ministry of Health and Family Welfare](https://www.mohfw.gov.in/) and other [unofficial sources](https://api.rootnet.in/#unofficial-sources).
 * App Icon: Raw icon has been taken from [Iconfinder](https://www.iconfinder.com/).
-* Others: In app icons, svgs and screenshot templates have been custom made using the platform [Figma](https://www.figma.com).
+* Others: In-app icons, svgs and screenshot templates have been custom made using the platform [Figma](https://www.figma.com).
