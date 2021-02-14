@@ -1,3 +1,6 @@
+<p>
+  <img src="https://img.shields.io/badge/app--size-34.14%20MB-brightgreen">
+</p>
 # Knowvid-19 India
 ## tirutsava21_appdev
 
