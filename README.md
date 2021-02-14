@@ -1,6 +1,3 @@
-<p>
-  <img src="https://img.shields.io/badge/app--size-34.14%20MB-brightgreen">
-</p>
 # Knowvid-19 India
 ## tirutsava21_appdev
 
@@ -32,6 +29,9 @@ For more images, checkout [Screenshots](Screenshots).
 
 ## Version
 v1.0.0
+
+## Permissions
+THIS APP REQUIRES AN ACTIVE INTERNET CONNECTION
 
 ## APK
 The apk is in apk-release folder in the root directory.
