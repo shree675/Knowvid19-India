@@ -1,6 +1,8 @@
-<img src="https://img.shields.io/badge/app--size-34.14%20MB-brightgreen">
-<img src="https://img.shields.io/badge/dart-99.3%25-blue">
-<img src="https://img.shields.io/badge/platform-android-lightgrey">
+<p>
+  <img src="https://img.shields.io/badge/app--size-34.14%20MB-brightgreen">&emsp;
+  <img src="https://img.shields.io/badge/dart-99.3%25-blue">&emsp;
+  <img src="https://img.shields.io/badge/platform-android-lightgrey">
+</p>
 
 # Knowvid-19 India
 ## tirutsava21_appdev
