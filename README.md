@@ -6,7 +6,9 @@
 
 # Knowvid-19 India
 ## tirutsava21_appdev
-
+<hr>
+*Winner of Tirutsava'21 App Dev contest*
+<hr>
 ## About
 A simple and a light informative app that provides live statistics about Covid-19 cases in different regions of India.
 This application aims to spread awareness among the people. It instills a sense of seriousness of the Covid-19 situation in the minds of people, which has been gradually dissolving lately.
