@@ -5,7 +5,7 @@
 </p>
 
 # Knowvid-19 India
-## tirutsava21_appdev
+## #tirutsava21_appdev
 <em>Winner of Tirutsava'21 App Dev contest</em>
 ## About
 A simple and a light informative app that provides live statistics about Covid-19 cases in different regions of India.
